@@ -28,46 +28,52 @@ export default class extends Plugin {
 
   replaceRegex (args) {
     const [ , search, replace, rest ] = args.join(' ').match(/(\/[^/]+\/[^ ]*) ([^ ]+)(.*)/) ?? Array(4).fill(null);
-    if (rest || !(search && replace)) {
-      return {
-        send: false,
-        result: {
-          type: 'rich',
-          color: 0xff0000,
-          title: 'Error',
-          description: `Usage: \`.replace <Search: Regex> <Replace: String>\`\nRegex format: \`/pattern/flags\`, flags are optional`
-        }
-      };
-    }
+    if (rest || !(search && replace)) return this.errorMessage();
 
     const [ , pattern, flags ] = (search.match(/\/([^/]+)\/([^/]*)/));
     const { content: lastMessageContent, id: lastMessageId } = Message.getLastEditableMessage(getChannelId());
 
-    const newContent = lastMessageContent.replace(new RegExp(pattern, flags), replace);
-    if (newContent !== lastMessageContent) {
-      editMessage(getChannelId(), lastMessageId, { content: newContent });
-      if (this.settings.get('SuccessMessage', true)) {
+    try {
+      const newContent = lastMessageContent.replace(new RegExp(pattern, flags), replace);
+      if (newContent !== lastMessageContent) {
+        editMessage(getChannelId(), lastMessageId, { content: newContent });
+        if (this.settings.get('SuccessMessage', true)) {
+          return {
+            send: false,
+            result: {
+              type: 'rich',
+              color: 0x00ff00,
+              title: 'Success',
+              description: `Replaced: ${lastMessageContent}\nTo: ${newContent}`
+            }
+          };
+        }
+      } else {
         return {
           send: false,
           result: {
             type: 'rich',
             color: 0x00ff00,
-            title: 'Success',
-            description: `Replaced: ${lastMessageContent}\nTo: ${newContent}`
+            title: 'No Change',
+            description: 'Nothing was edited'
           }
         };
       }
-    } else {
-      return {
-        send: false,
-        result: {
-          type: 'rich',
-          color: 0x00ff00,
-          title: 'No Change',
-          description: 'Nothing was edited'
-        }
-      };
+    } catch {
+      return this.errorMessage();
     }
+  }
+
+  errorMessage () {
+    return {
+      send: false,
+      result: {
+        type: 'rich',
+        color: 0xff0000,
+        title: 'Error',
+        description: `Usage: \`.replace <Search: Regex> <Replace: String>\`\nRegex format: \`/pattern/flags\`, flags are optional`
+      }
+    };
   }
 
   stop () {
