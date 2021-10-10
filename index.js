@@ -1,14 +1,12 @@
 import { Plugin } from '@vizality/entities';
 import { getModule } from '@vizality/webpack';
 
-const Message = getModule('getLastEditableMessage');
-const { getChannelId } = getModule(m => m?._dispatchToken && m?.getChannelId);
-const { editMessage } = getModule(m => m?.editMessage && m?.sendMessage);
+const { getLastEditableMessage } = getModule(m => m.getLastEditableMessage);
+const { getChannelId } = getModule(m => m._dispatchToken && m.getChannelId);
+const { editMessage } = getModule(m => m.editMessage && m.sendMessage);
 
 export default class extends Plugin {
   start () {
-    if (!this.settings.getKeys().length) this.settings.set('SuccessMessage', true);
-
     vizality.api.commands.registerCommand({
       command: 'replace',
       description: 'Replace last message sent in this channel using regex.',
@@ -31,7 +29,7 @@ export default class extends Plugin {
     if (rest || !(search && replace)) return this.errorMessage();
 
     const [ , pattern, flags ] = (search.match(/\/([^/]+)\/([^/]*)/));
-    const { content: lastMessageContent, id: lastMessageId } = Message.getLastEditableMessage(getChannelId());
+    const { content: lastMessageContent, id: lastMessageId } = getLastEditableMessage(getChannelId());
 
     try {
       const newContent = lastMessageContent.replace(new RegExp(pattern, flags), replace);
