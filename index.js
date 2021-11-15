@@ -1,7 +1,7 @@
 import { Plugin } from '@vizality/entities';
 import { getModule } from '@vizality/webpack';
 
-const { getLastEditableMessage } = getModule(m => m.getLastEditableMessage);
+const Message = getModule(m => m.getLastEditableMessage);
 const { getChannelId } = getModule(m => m._dispatchToken && m.getChannelId);
 const { editMessage } = getModule(m => m.editMessage && m.sendMessage);
 
@@ -29,7 +29,7 @@ export default class extends Plugin {
     if (rest || !(search && replace)) return this.errorMessage();
 
     const [ , pattern, flags ] = (search.match(/\/([^/]+)\/([^/]*)/));
-    const { content: lastMessageContent, id: lastMessageId } = getLastEditableMessage(getChannelId());
+    const { content: lastMessageContent, id: lastMessageId } = Message.getLastEditableMessage(getChannelId());
 
     try {
       const newContent = lastMessageContent.replace(new RegExp(pattern, flags), replace);
