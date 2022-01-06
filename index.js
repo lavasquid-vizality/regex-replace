@@ -5,7 +5,7 @@ const Message = getModule(m => m.getLastEditableMessage);
 const { getChannelId } = getModule(m => m._dispatchToken && m.getChannelId);
 const { editMessage } = getModule(m => m.editMessage && m.sendMessage);
 
-export default class extends Plugin {
+export default class RegexReplace extends Plugin {
   start () {
     vizality.api.commands.registerCommand({
       command: 'replace',
