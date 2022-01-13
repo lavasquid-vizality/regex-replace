@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import { SwitchItem } from '@vizality/components/settings';
 import { CodeBlock } from '@vizality/components';
+import { SwitchItem } from '@vizality/components/settings';
 
 export default memo(({ getSetting, updateSetting, toggleSetting }) => {
   return <>
