@@ -28,7 +28,7 @@ export default class RegexReplace extends Plugin {
     const [ , search, replace, rest ] = args.join(' ').match(/(\/[^/]+\/[^ ]*) ([^ ]+)(.*)/) ?? Array(4).fill(null);
     if (rest || !(search && replace)) return this.errorMessage();
 
-    const [ , pattern, flags ] = (search.match(/\/([^/]+)\/([^/]*)/));
+    const [ , pattern, flags ] = search.match(/\/([^/]+)\/([^/]*)/);
     const { content: lastMessageContent, id: lastMessageId } = Message.getLastEditableMessage(getChannelId());
 
     try {

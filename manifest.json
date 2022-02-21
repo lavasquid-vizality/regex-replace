@@ -1,7 +1,7 @@
 {
   "name": "Regex Replace",
   "description": "Replace last message in a channel using regex, similar to discord's s/old/new",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "author": "LavaSquid",
   "license": "MIT"
 }
